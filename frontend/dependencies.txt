@@ -1,0 +1,6 @@
+1 npm create vite@latest
+2 npm install tailwindcss @tailwindcss/vite
+3 npm install -g json-server
+4 npm install axios
+5 npm install @tanstack/react-router
+6 npm install -D @tanstack/router-plugin
