@@ -1,11 +1,11 @@
 // import { error } from "console";
 import { createContext, useContext, useState, type ReactNode } from "react";
 export interface User {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    roles: string;
+    id?: string;
+    name?: string;
+    email?: string;
+    password?: string;
+    roles?: string;
     token?: string;
     // permission: string[];
 }
@@ -25,8 +25,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return saved ? JSON.parse(saved) : null;
     });
     const login = (userData: User) => {
-        setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
     };
     const logout = () => {
         setUser(null);

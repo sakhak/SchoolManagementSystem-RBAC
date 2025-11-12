@@ -102,8 +102,8 @@ const PermissionsPage: React.FC = () => {
                               ...currentPermission,
                               updatedAt: new Date().toISOString().split("T")[0],
                           }
-                        : perm
-                )
+                        : perm,
+                ),
             );
             setShowEditModal(false);
             setCurrentPermission(null);

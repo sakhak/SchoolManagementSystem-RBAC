@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import FooterPage from "../common/FooterPage";
 import HeaderPage from "../common/HeaderPage";
 import { useAuth } from "../../contexts/AuthCotext";
+import { request } from "../utils/Request";
 
 interface MenuItem {
     id: string;
@@ -25,7 +26,12 @@ const MainLayout: React.FC = () => {
     };
 
     const { user } = useAuth();
-    console.log(user?.roles);
+    // console.log(user?.token);
+    useEffect(() => {
+        if (!user?.token) {
+            navigate("/login");
+        }
+    });
     const menuItems: MenuItem[] = [
         { id: "dashboard", label: "Dashboard", icon: "fas fa-home", path: "/" },
         {
@@ -288,6 +294,19 @@ const MainLayout: React.FC = () => {
             (subItem.path && location.pathname === subItem.path)
         );
     };
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const res = await request("userprofile");
+                // console.log(res);
+            } catch (err: any) {
+                console.error(err, "Failed to request UserProfile");
+            } finally {
+                console.log("Request succee");
+            }
+        };
+        fetchUserProfile();
+    }, []);
 
     const getTextClassForItem = (item: MenuItem) =>
         isMenuItemActive(item) ? "text-yellow-300" : "text-white";

@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import sakhakimage from "../../assets/images/loeung Sakhak.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthCotext";
+import { config } from "../utils/Config";
 
 const HeaderPage: React.FC = () => {
     // const [logout] = useAuth();
@@ -21,11 +22,22 @@ const HeaderPage: React.FC = () => {
                 setOpen(false);
             }
         };
+        // const handleFecthusrProfile = async () => {
+        //     try {
+        //         const res = await request("userprofile");
+        //         console.log(res);
+        //     } catch (err: any) {
+        //         console.error(err, "Error load user profile.");
+        //     } finally {
+        //         console.log("success");
+        //     }
+        // };
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
+        // handleFecthusrProfile();
     }, []);
-
+    console.log("This is fron header", user?.userprofile);
     const handleLogout = () => {
         // console.log("Logout");
         logout();
@@ -39,7 +51,6 @@ const HeaderPage: React.FC = () => {
     const handleViewProfile = () => {
         navigate("/profile");
     };
-
     return (
         <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="flex items-center justify-between p-3">
@@ -75,11 +86,28 @@ const HeaderPage: React.FC = () => {
                             aria-expanded={open}
                             className="flex items-center space-x-3 border-l border-gray-200 pl-4 p-2 hover:bg-gray-50 rounded-md"
                         >
-                            <img
-                                src={sakhakimage}
-                                alt="Admin"
-                                className="w-12 h-12 rounded-full ml-2 object-cover border-2 border-gray-200 dark:border-gray-600"
-                            />
+                            {user?.userprofile?.profile_image ? (
+                                <img
+                                    src={
+                                        config.profile_url +
+                                        user?.userprofile?.profile_image
+                                    }
+                                    alt="Admin"
+                                    className="w-12 h-12 rounded-full ml-2 object-cover border-2 border-gray-200 dark:border-gray-600"
+                                />
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="w-12 h-12 rounded-full ml-2 border-2 border-gray-200 dark:border-gray-600
+                                    flex items-center justify-center bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-200
+                                    shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition
+                                    focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400"
+                                    aria-label="Open user menu"
+                                >
+                                    <i className="fa-solid fa-user text-lg"></i>
+                                </button>
+                            )}
+
                             <div className="hidden md:block text-left">
                                 <p className="font-semibold text-gray-800">
                                     Mr. {user?.name}

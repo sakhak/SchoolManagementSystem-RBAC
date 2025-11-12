@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
 {
+     public function checkToken(Request $request)
+{
+    if(Auth::check()){
+        return response()->json(['user' => Auth::user()]);
+    }
+    return response()->json(['message' => 'Unauthenticated'], 401);
+}
     /**
      * Display a listing of the resource.
      */
@@ -61,7 +69,7 @@ class AuthenticationController extends Controller
             if (Hash::check($validated['password'], $user->password)) {
                 $token = $user->createToken('auth_token', ['*'], now()->addDays(30))->plainTextToken;
                 return response()->json([
-                    'data' => $user->load("roles"),
+                    'data' => $user->load("roles","userprofile"),
                     'access_token' => $token,
                     'message' => 'User logged in successfully',
                 ], 200);
@@ -77,7 +85,7 @@ class AuthenticationController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::with('roles')->findOrFail($id);
+        $user = User::with('roles',"userprofile")->findOrFail($id);
         return response()->json([
             'data' => $user,
         ]);

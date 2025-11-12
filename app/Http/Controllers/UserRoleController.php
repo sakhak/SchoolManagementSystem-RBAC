@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserRoleController extends Controller
 {
+   
+
     /**
      * Display a listing of the resource.
      */

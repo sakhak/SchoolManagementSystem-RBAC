@@ -16,10 +16,11 @@ function App() {
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
+                    <Route>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                    </Route>
                     <Route
-                        path="/"
                         element={
                             <ProtectedRoute>
                                 <MainLayout />
@@ -32,7 +33,7 @@ function App() {
                             path="permission"
                             element={<PermissionsPage />}
                         />
-                        <Route path="profile" element={<UserProfilePage/>}/>
+                        <Route path="profile" element={<UserProfilePage />} />
                         <Route path="role" element={<RolePage />} />
                         <Route path="user" element={<UserPage />} />
                         <Route path="*" element={<NotFoundPage />} />

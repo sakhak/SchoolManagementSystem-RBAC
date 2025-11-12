@@ -45,14 +45,15 @@ const LoginPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        const parm = {
+            email: formData.email,
+            password: formData.password,
+        };
 
         try {
-            const res = await request("login", "post", {
-                email: formData.email,
-                password: formData.password,
-            });
+            const res = await request("login", "post", parm);
 
-            console.log(res);
+            console.log(res.userprofile);
 
             if (res && res.access_token && res.data) {
                 login({

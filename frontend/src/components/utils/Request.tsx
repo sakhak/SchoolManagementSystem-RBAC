@@ -7,9 +7,11 @@ export const request = async (url = "", method = "get", data = {}) => {
     const headers: Record<string, string> = {
         Accept: "application/json",
         "Content-Type": "application/json",
+        // Authorization: `Bearer ${token()}`,
     };
     if (token) {
-        headers.Authorization = `Barer ${token}`;
+        // headers["Authorization"] = `Bearer ${token}`;
+        headers.Authorization = `Bearer ${token}`;
     }
     if (data instanceof FormData) {
         delete headers["Content-Type"];

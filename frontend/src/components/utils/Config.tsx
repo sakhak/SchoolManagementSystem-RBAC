@@ -1,3 +1,4 @@
-export const config ={
-    api_url: "http://127.0.0.1:8000/api/"
-}
+export const config = {
+    api_url: "http://127.0.0.1:8000/api/",
+    profile_url: "http://127.0.0.1:8000/storage/",
+};
