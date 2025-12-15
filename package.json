@@ -15,6 +15,7 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "react-loader-spinner": "^8.0.0",
         "sanctum": "^1.9.0"
     }
 }

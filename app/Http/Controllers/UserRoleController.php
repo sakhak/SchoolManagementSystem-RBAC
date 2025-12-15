@@ -71,34 +71,54 @@ class UserRoleController extends Controller
     //         'message' => 'Role assigned to user successfully',
     //     ], 201);
     // }
-   public function update(Request $request, string $id)
+//    public function update(Request $request, string $id)
+// {
+//     $validated = $request->validate([
+//         'user_id' => ['required', 'exists:users,id'],
+//         'role_id' => ['required', 'exists:roles,id'],
+//     ]);
+
+//      $userRole = UserRole::where('user_id', $validated['user_id'])->first();
+
+//     if ($userRole && $userRole->role_id == $validated['role_id']) {
+//         return response()->json([
+//             'message' => 'User already has this role',
+//         ], 409);
+//     }
+
+//     if ($userRole) {
+//         $userRole->update([
+//             'role_id' => $validated['role_id'],
+//         ]);
+//     }
+
+//     return response()->json([
+//         'data' => $userRole,
+//         'message' => 'Role updated successfully',
+//     ]);
+// }
+public function update(Request $request)
 {
     $validated = $request->validate([
         'user_id' => ['required', 'exists:users,id'],
         'role_id' => ['required', 'exists:roles,id'],
     ]);
 
-    // 🟡 Check if the same user-role combination already exists
-    $exists = UserRole::where('user_id', $validated['user_id'])
-        ->where('role_id', $validated['role_id'])
-        ->exists();
+    $userRole = UserRole::firstOrNew(['user_id' => $validated['user_id']]);
 
-    if ($exists) {
+    if ($userRole->exists && $userRole->role_id == $validated['role_id']) {
         return response()->json([
             'message' => 'User already has this role',
         ], 409);
     }
 
-    // 🟢 Otherwise, create a new user-role link
-    $userRole = UserRole::create([
-        'user_id' => $validated['user_id'],
-        'role_id' => $validated['role_id'],
-    ]);
+    $userRole->role_id = $validated['role_id'];
+    $userRole->save();
 
     return response()->json([
         'data' => $userRole,
-        'message' => 'Role assigned to user successfully',
-    ], 201);
+        'message' => 'Role updated successfully',
+    ]);
 }
 
 

@@ -19,4 +19,22 @@ class Role extends Model
     public function users(){
         return $this->belongsToMany(User::class, 'user_roles', 'role_id', 'user_id');
     }
+    const roles = [
+        [
+            'name' => 'Super Admin',
+            'key'  => 'super_admin',
+        ],
+        [
+            'name' => 'Admin',
+            'key'  => 'admin',
+         ],
+        [
+            'name' => 'Teacher',
+            'key'  => 'teacher',
+        ],
+        [
+            'name' => 'Student',
+            'key'  => 'student',
+        ]
+    ];
 }

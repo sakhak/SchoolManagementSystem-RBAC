@@ -312,106 +312,112 @@ const MainLayout: React.FC = () => {
         isMenuItemActive(item) ? "text-yellow-300" : "text-white";
 
     return (
-        <div className="bg-gray-50 font-sans">
-            <div className="flex h-screen">
-                <div className="w-64 bg-blue-800 text-white shadow-lg">
-                    <div className="p-6 border-b border-blue-700">
-                        <div className="flex items-center space-x-3">
-                            <i className="fas fa-graduation-cap text-2xl text-yellow-300"></i>
-                            <h1 className="text-xl font-bold">EduManage</h1>
+        <>
+            <div className="bg-gray-50 font-sans">
+                <div className="flex h-screen">
+                    <div className="w-64 bg-blue-800 text-white shadow-lg">
+                        <div className="p-6 border-b border-blue-700">
+                            <div className="flex items-center space-x-3">
+                                <i className="fas fa-graduation-cap text-2xl text-yellow-300"></i>
+                                <h1 className="text-xl font-bold">EduManage</h1>
+                            </div>
                         </div>
-                    </div>
 
-                    <nav className="p-4 space-y-2">
-                        {filteredMenuItems.map((item) => (
-                            <div key={item.id}>
-                                <button
-                                    onClick={() => handleMenuItemClick(item)}
-                                    className={`flex items-center justify-between space-x-3 p-3 rounded-lg w-full text-left transition-all ${
-                                        isMenuItemActive(item)
-                                            ? "bg-blue-700"
-                                            : "hover:bg-blue-600"
-                                    }`}
-                                >
-                                    <div className="flex items-center space-x-3">
-                                        <i
-                                            className={`${
-                                                item.icon
-                                            } w-5 ${getTextClassForItem(item)}`}
-                                        ></i>
-                                        <span
-                                            className={getTextClassForItem(
-                                                item,
-                                            )}
-                                        >
-                                            {item.label}
-                                        </span>
-                                    </div>
-                                    {item.subItems && (
-                                        <i
-                                            className={`fas fa-chevron-down text-xs transition-transform ${
-                                                openSubMenus[item.id]
-                                                    ? "rotate-180"
-                                                    : ""
-                                            }`}
-                                        ></i>
-                                    )}
-                                </button>
-                                {item.subItems && openSubMenus[item.id] && (
-                                    <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-600 pl-3">
-                                        {item.subItems.map((subItem) => (
-                                            <button
-                                                key={subItem.id}
-                                                onClick={() =>
-                                                    handleSubMenuItemClick(
-                                                        subItem,
-                                                    )
-                                                }
-                                                className={`flex items-center space-x-3 p-2 rounded-lg w-full text-left transition-all ${
-                                                    isSubMenuItemActive(subItem)
-                                                        ? "bg-blue-700"
-                                                        : "hover:bg-blue-600"
-                                                }`}
+                        <nav className="p-4 space-y-2">
+                            {filteredMenuItems.map((item) => (
+                                <div key={item.id}>
+                                    <button
+                                        onClick={() =>
+                                            handleMenuItemClick(item)
+                                        }
+                                        className={`flex items-center justify-between space-x-3 p-3 rounded-lg w-full text-left transition-all ${
+                                            isMenuItemActive(item)
+                                                ? "bg-blue-700"
+                                                : "hover:bg-blue-600"
+                                        }`}
+                                    >
+                                        <div className="flex items-center space-x-3">
+                                            <i
+                                                className={`${
+                                                    item.icon
+                                                } w-5 ${getTextClassForItem(item)}`}
+                                            ></i>
+                                            <span
+                                                className={getTextClassForItem(
+                                                    item,
+                                                )}
                                             >
-                                                <i
-                                                    className={`${
-                                                        subItem.icon
-                                                    } w-4 text-sm ${
+                                                {item.label}
+                                            </span>
+                                        </div>
+                                        {item.subItems && (
+                                            <i
+                                                className={`fas fa-chevron-down text-xs transition-transform ${
+                                                    openSubMenus[item.id]
+                                                        ? "rotate-180"
+                                                        : ""
+                                                }`}
+                                            ></i>
+                                        )}
+                                    </button>
+                                    {item.subItems && openSubMenus[item.id] && (
+                                        <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-600 pl-3">
+                                            {item.subItems.map((subItem) => (
+                                                <button
+                                                    key={subItem.id}
+                                                    onClick={() =>
+                                                        handleSubMenuItemClick(
+                                                            subItem,
+                                                        )
+                                                    }
+                                                    className={`flex items-center space-x-3 p-2 rounded-lg w-full text-left transition-all ${
                                                         isSubMenuItemActive(
                                                             subItem,
                                                         )
-                                                            ? "text-yellow-300"
-                                                            : "text-white"
-                                                    }`}
-                                                ></i>
-                                                <span
-                                                    className={`text-sm ${
-                                                        isSubMenuItemActive(
-                                                            subItem,
-                                                        )
-                                                            ? "text-yellow-300"
-                                                            : "text-white"
+                                                            ? "bg-blue-700"
+                                                            : "hover:bg-blue-600"
                                                     }`}
                                                 >
-                                                    {subItem.label}
-                                                </span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </nav>
-                </div>
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    <HeaderPage />
-                    <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
-                        <Outlet />
-                        <FooterPage />
-                    </main>
+                                                    <i
+                                                        className={`${
+                                                            subItem.icon
+                                                        } w-4 text-sm ${
+                                                            isSubMenuItemActive(
+                                                                subItem,
+                                                            )
+                                                                ? "text-yellow-300"
+                                                                : "text-white"
+                                                        }`}
+                                                    ></i>
+                                                    <span
+                                                        className={`text-sm ${
+                                                            isSubMenuItemActive(
+                                                                subItem,
+                                                            )
+                                                                ? "text-yellow-300"
+                                                                : "text-white"
+                                                        }`}
+                                                    >
+                                                        {subItem.label}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </nav>
+                    </div>
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        <HeaderPage />
+                        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+                            <Outlet />
+                            <FooterPage />
+                        </main>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -1,12 +1,12 @@
 <?php
-
+use App\Http\Middleware\CheckRoleAssignment;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UserRoleController;
-use App\Http\Middleware\EnsureTokenIsValid;
+// use App\Http\Middleware\EnsureTokenIsValid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +27,8 @@ use Illuminate\Support\Facades\Route;
             Route::get('/users', [AuthenticationController::class, 'index']);
             Route::get('/users/{id}', [AuthenticationController::class, 'show']);
             Route::post('/userprofile', [UserProfileController::class, 'store']);
-            Route::get('/userprofile', [UserProfileController::class, 'index'])->withoutMiddleware([EnsureTokenIsValid::class]);
+            Route::get('/userprofile', [UserProfileController::class, 'index']);
+            // ->withoutMiddleware([EnsureTokenIsValid::class])
 
             Route::post('/permissions', [PermissionController::class, 'store']);
             Route::put('/permissions/{id}', [PermissionController::class, 'update']);
@@ -47,7 +48,7 @@ use Illuminate\Support\Facades\Route;
 
             Route::post('/user-roles', [UserRoleController::class, 'store']);
             Route::get('/user-roles/{id}', [UserRoleController::class, 'show']);
-            Route::post('/user-roles/{id}', [UserRoleController::class, 'update']);
+            Route::put('/user-roles', [UserRoleController::class, 'update']);
 
     });
 

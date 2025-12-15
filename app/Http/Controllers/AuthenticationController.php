@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
@@ -37,7 +38,7 @@ class AuthenticationController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role_id' => ['required', 'exists:roles,id'],
+            // 'role_id' => ['required', 'exists:roles,id'],
         ]);
         
         $user = User::create([
@@ -46,9 +47,10 @@ class AuthenticationController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
         $userId = $user->id;
+        $studentRole = Role::where('key', 'student')->firstOrFail();
         $userRole = UserRole::create([
             'user_id' => $userId,
-            'role_id' => $validated['role_id']
+            'role_id' => $studentRole->id,
         ]);
         $token = $user->createToken('auth_token', ['*'], now()->addDays(30))->plainTextToken;
 
