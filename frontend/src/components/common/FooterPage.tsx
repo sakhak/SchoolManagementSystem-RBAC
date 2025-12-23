@@ -52,7 +52,6 @@ const FooterPage: React.FC<FooterPageProps> = ({
                             className="flex items-center space-x-3 mt-4"
                             aria-hidden
                         >
-                            {/* simple SVG social icons */}
                             <a
                                 href="#"
                                 className="text-gray-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 rounded-full p-1"

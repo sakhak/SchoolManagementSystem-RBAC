@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { request } from "../utils/Request";
 import { useAuth } from "../../contexts/AuthCotext";
-import { Audio, ThreeDots } from "react-loader-spinner";
+import FullScreenLoader from "../common/FullScreenLoader";
 
 const LoginPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -63,9 +63,7 @@ const LoginPage: React.FC = () => {
     return (
         <>
             {loading && (
-                <div className="fixed inset-0 z-50 bg-white/70 flex items-center justify-center">
-                    <ThreeDots  height="80" width="80" color="#3b82f6" />
-                </div>
+                <FullScreenLoader/>
             )}
             <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
                 <div className="max-w-md w-full">

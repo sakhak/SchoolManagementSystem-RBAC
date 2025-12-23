@@ -10,6 +10,10 @@ import RolePage from "./page/roles/RolePage";
 import UserPage from "./page/users/UserPage";
 import ProtectedRoute from "./components/protectRout/Protected";
 import { UserProfilePage } from "./page/userProfile/UserProfilePage";
+import ClassAttendance from "./components/class/ClassAttendance";
+import AttendanceReportPage from "./components/class/AttendanceReportPage";
+import DailyAttendancePage from "./components/class/DailyAttendanceRecord";
+import StudentClassSessionAttendancePage from "./components/students/StudentClassSessionAttendance";
 
 function App() {
     return (
@@ -33,9 +37,17 @@ function App() {
                             path="permission"
                             element={<PermissionsPage />}
                         />
+                        <Route
+                            path="classAttendance"
+                            element={<ClassAttendance />}
+                        />
+                        <Route path="/attendance/report" element={<AttendanceReportPage />} />
+                        <Route path="/attendance/daily" element={<DailyAttendancePage />} />
+                        <Route path="/attendance/studentClassSessionAttendance" element={<StudentClassSessionAttendancePage />} />
                         <Route path="profile" element={<UserProfilePage />} />
                         <Route path="role" element={<RolePage />} />
                         <Route path="user" element={<UserPage />} />
+
                         <Route path="*" element={<NotFoundPage />} />
                     </Route>
                 </Routes>
