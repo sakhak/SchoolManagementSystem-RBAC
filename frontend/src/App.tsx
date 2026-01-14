@@ -14,6 +14,7 @@ import ClassAttendance from "./components/class/ClassAttendance";
 import AttendanceReportPage from "./components/class/AttendanceReportPage";
 import DailyAttendancePage from "./components/class/DailyAttendanceRecord";
 import StudentClassSessionAttendancePage from "./components/students/StudentClassSessionAttendance";
+import SchoolErdTSX from "./components/manageStuddent/SchoolErdTSX";
 
 function App() {
     return (
@@ -41,12 +42,25 @@ function App() {
                             path="classAttendance"
                             element={<ClassAttendance />}
                         />
-                        <Route path="/attendance/report" element={<AttendanceReportPage />} />
-                        <Route path="/attendance/daily" element={<DailyAttendancePage />} />
-                        <Route path="/attendance/studentClassSessionAttendance" element={<StudentClassSessionAttendancePage />} />
+                        <Route
+                            path="/attendance/report"
+                            element={<AttendanceReportPage />}
+                        />
+                        <Route
+                            path="/attendance/daily"
+                            element={<DailyAttendancePage />}
+                        />
+                        <Route
+                            path="/attendance/studentClassSessionAttendance"
+                            element={<StudentClassSessionAttendancePage />}
+                        />
                         <Route path="profile" element={<UserProfilePage />} />
                         <Route path="role" element={<RolePage />} />
                         <Route path="user" element={<UserPage />} />
+                        <Route
+                            path="/users/activity"
+                            element={<SchoolErdTSX />}
+                        />
 
                         <Route path="*" element={<NotFoundPage />} />
                     </Route>

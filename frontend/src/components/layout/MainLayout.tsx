@@ -26,202 +26,16 @@ const MainLayout: React.FC = () => {
     };
 
     const { user } = useAuth();
-    // console.log(user?.token);
     useEffect(() => {
-        if (!user?.token) {
-            navigate("/login");
-        }
-    });
-    // const menuItems: MenuItem[] = [
-    //     { id: "dashboard", label: "Dashboard", icon: "fas fa-home", path: "/" },
-    //     {
-    //         id: "users",
-    //         label: "Users",
-    //         icon: "fas fa-users",
-    //         subItems: [
-    //             {
-    //                 id: "user",
-    //                 label: "Users",
-    //                 icon: "fas fa-user",
-    //                 path: "/user",
-    //             },
-    //             {
-    //                 id: "role",
-    //                 label: "Role",
-    //                 icon: "fas fa-user-shield",
-    //                 path: "/role",
-    //             },
-    //             {
-    //                 id: "permission",
-    //                 label: "Permission",
-    //                 icon: "fas fa-key",
-    //                 path: "/permission",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: "students",
-    //         label: "Students",
-    //         icon: "fas fa-user-graduate",
-    //         subItems: [
-    //             {
-    //                 id: "all-students",
-    //                 label: "All Students",
-    //                 icon: "fas fa-list",
-    //                 path: "/students",
-    //             },
-    //             {
-    //                 id: "student-attendance",
-    //                 label: "Attendance",
-    //                 icon: "fas fa-clipboard-check",
-    //                 path: "/students/attendance",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: "teachers",
-    //         label: "Teachers",
-    //         icon: "fas fa-chalkboard-teacher",
-    //         subItems: [
-    //             {
-    //                 id: "all-teachers",
-    //                 label: "All Teachers",
-    //                 icon: "fas fa-list",
-    //                 path: "/teachers",
-    //             },
-    //             {
-    //                 id: "add-teacher",
-    //                 label: "Add Teacher",
-    //                 icon: "fas fa-user-plus",
-    //                 path: "/teachers/add",
-    //             },
-    //             {
-    //                 id: "teacher-attendance",
-    //                 label: "Attendance",
-    //                 icon: "fas fa-clipboard-check",
-    //                 path: "/teachers/attendance",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: "classes",
-    //         label: "Classes",
-    //         icon: "fas fa-book",
-    //         subItems: [
-    //             {
-    //                 id: "all-classes",
-    //                 label: "All Classes",
-    //                 icon: "fas fa-list",
-    //                 path: "/classes",
-    //             },
-    //             {
-    //                 id: "class-schedule",
-    //                 label: "Class Schedule",
-    //                 icon: "fas fa-calendar",
-    //                 path: "/classes/schedule",
-    //             },
-    //             {
-    //                 id: "subjects",
-    //                 label: "Subjects",
-    //                 icon: "fas fa-book-open",
-    //                 path: "/subjects",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: "schedule",
-    //         label: "Schedule",
-    //         icon: "fas fa-calendar-alt",
-    //         path: "/schedule",
-    //     },
-    //     {
-    //         id: "finance",
-    //         label: "Finance",
-    //         icon: "fas fa-file-invoice-dollar",
-    //         subItems: [
-    //             {
-    //                 id: "fees",
-    //                 label: "Fee Management",
-    //                 icon: "fas fa-money-bill-wave",
-    //                 path: "/finance/fees",
-    //             },
-    //             {
-    //                 id: "payroll",
-    //                 label: "Payroll",
-    //                 icon: "fas fa-receipt",
-    //                 path: "/finance/payroll",
-    //             },
-    //             {
-    //                 id: "expenses",
-    //                 label: "Expenses",
-    //                 icon: "fas fa-chart-line",
-    //                 path: "/finance/expenses",
-    //             },
-    //             {
-    //                 id: "reports",
-    //                 label: "Financial Reports",
-    //                 icon: "fas fa-file-alt",
-    //                 path: "/finance/reports",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: "reports",
-    //         label: "Reports",
-    //         icon: "fas fa-chart-bar",
-    //         subItems: [
-    //             {
-    //                 id: "attendance-reports",
-    //                 label: "Attendance Reports",
-    //                 icon: "fas fa-clipboard-list",
-    //                 path: "/reports/attendance",
-    //             },
-    //             {
-    //                 id: "student-reports",
-    //                 label: "Student Reports",
-    //                 icon: "fas fa-user-graduate",
-    //                 path: "/reports/students",
-    //             },
-    //             {
-    //                 id: "teacher-reports",
-    //                 label: "Teacher Reports",
-    //                 icon: "fas fa-chalkboard-teacher",
-    //                 path: "/reports/teachers",
-    //             },
-    //             {
-    //                 id: "financial-reports",
-    //                 label: "Financial Reports",
-    //                 icon: "fas fa-file-invoice-dollar",
-    //                 path: "/reports/finance",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: "settings",
-    //         label: "Settings",
-    //         icon: "fas fa-cog",
-    //         subItems: [
-    //             {
-    //                 id: "general",
-    //                 label: "General Settings",
-    //                 icon: "fas fa-cogs",
-    //                 path: "/settings/general",
-    //             },
-    //             {
-    //                 id: "users-settings",
-    //                 label: "User Management",
-    //                 icon: "fas fa-users-cog",
-    //                 path: "/settings/users",
-    //             },
-    //             {
-    //                 id: "backup",
-    //                 label: "Backup & Restore",
-    //                 icon: "fas fa-database",
-    //                 path: "/settings/backup",
-    //             },
-    //         ],
-    //     },
-    // ];
+        if (!user?.token) return;
+
+        const fetchUserProfile = async () => {
+            await request("userprofile");
+        };
+
+        fetchUserProfile();
+    }, [user?.token]);
+
     const menuItems: MenuItem[] = [
         {
             id: "dashboard",
@@ -231,7 +45,7 @@ const MainLayout: React.FC = () => {
         },
         {
             id: "users",
-            label: "Users & Roles",
+            label: "Manage Users",
             icon: "fas fa-users-cog",
             subItems: [
                 {
@@ -262,7 +76,7 @@ const MainLayout: React.FC = () => {
         },
         {
             id: "teachers",
-            label: "Teachers",
+            label: "Manage Teachers",
             icon: "fas fa-chalkboard-teacher",
             subItems: [
                 {
@@ -272,28 +86,16 @@ const MainLayout: React.FC = () => {
                     path: "/teachers",
                 },
                 {
-                    id: "add-teacher",
-                    label: "Add Teacher",
-                    icon: "fas fa-user-plus",
-                    path: "/teachers/add",
-                },
-                {
                     id: "teacher-attendance",
-                    label: "Attendance",
+                    label: "Teacher Attendance",
                     icon: "fas fa-clipboard-check",
                     path: "/teachers/attendance",
-                },
-                {
-                    id: "teacher-assignments",
-                    label: "Assignments",
-                    icon: "fas fa-tasks",
-                    path: "/teachers/assignments",
                 },
             ],
         },
         {
             id: "students",
-            label: "Students",
+            label: "Manage Students",
             icon: "fas fa-user-graduate",
             subItems: [
                 {
@@ -304,40 +106,28 @@ const MainLayout: React.FC = () => {
                 },
                 {
                     id: "student-attendance",
-                    label: "Attendance",
+                    label: "Student Attendance",
                     icon: "fas fa-clipboard-check",
                     path: "/attendance/studentClassSessionAttendance",
                 },
                 {
-                    id: "student-registration",
-                    label: "New Registration",
-                    icon: "fas fa-user-plus",
-                    path: "/students/register",
-                },
-                {
-                    id: "student-promotion",
-                    label: "Promotion",
-                    icon: "fas fa-arrow-up",
-                    path: "/students/promotion",
+                    id: "student-blacklist",
+                    label: "Student Blacklist",
+                    icon: "fas fa-user-times",
+                    path: "/students/blacklist",
                 },
             ],
         },
         {
             id: "classes",
-            label: "Classes & Subjects",
+            label: "Manage Classes",
             icon: "fas fa-school",
             subItems: [
                 {
                     id: "all-classes",
-                    label: "Classes",
+                    label: "All Classes",
                     icon: "fas fa-chalkboard",
                     path: "/classes",
-                },
-                {
-                    id: "subjects",
-                    label: "Subjects",
-                    icon: "fas fa-book-open",
-                    path: "/subjects",
                 },
                 {
                     id: "class-teacher",
@@ -346,10 +136,23 @@ const MainLayout: React.FC = () => {
                     path: "/classes/teachers",
                 },
                 {
-                    id: "timetable",
-                    label: "Timetable",
-                    icon: "fas fa-calendar-alt",
-                    path: "/timetable",
+                    id: "subjects",
+                    label: "Subjects",
+                    icon: "fas fa-book-open",
+                    path: "/subjects",
+                },
+            ],
+        },
+        {
+            id: "terms",
+            label: "Manage Terms",
+            icon: "fas fa-school",
+            subItems: [
+                {
+                    id: "all-terms",
+                    label: "All Terms",
+                    icon: "fas fa-chalkboard",
+                    path: "/terms",
                 },
             ],
         },
@@ -378,158 +181,158 @@ const MainLayout: React.FC = () => {
                 },
             ],
         },
-        {
-            id: "examinations",
-            label: "Examinations",
-            icon: "fas fa-file-alt",
-            subItems: [
-                {
-                    id: "exam-schedule",
-                    label: "Exam Schedule",
-                    icon: "fas fa-calendar",
-                    path: "/exams/schedule",
-                },
-                {
-                    id: "marks-entry",
-                    label: "Marks Entry",
-                    icon: "fas fa-edit",
-                    path: "/exams/marks",
-                },
-                {
-                    id: "results",
-                    label: "Results",
-                    icon: "fas fa-chart-line",
-                    path: "/exams/results",
-                },
-            ],
-        },
+        // {
+        //     id: "examinations",
+        //     label: "Examinations",
+        //     icon: "fas fa-file-alt",
+        //     subItems: [
+        //         {
+        //             id: "exam-schedule",
+        //             label: "Exam Schedule",
+        //             icon: "fas fa-calendar",
+        //             path: "/exams/schedule",
+        //         },
+        //         {
+        //             id: "marks-entry",
+        //             label: "Marks Entry",
+        //             icon: "fas fa-edit",
+        //             path: "/exams/marks",
+        //         },
+        //         {
+        //             id: "results",
+        //             label: "Results",
+        //             icon: "fas fa-chart-line",
+        //             path: "/exams/results",
+        //         },
+        //     ],
+        // },
 
-        {
-            id: "schedule",
-            label: "Schedule",
-            icon: "fas fa-calendar-alt",
-            subItems: [
-                {
-                    id: "timetable",
-                    label: "Class Timetable",
-                    icon: "fas fa-table",
-                    path: "/timetable",
-                },
-                {
-                    id: "exam-schedule",
-                    label: "Exam Schedule",
-                    icon: "fas fa-calendar-check",
-                    path: "/schedule/exams",
-                },
-                {
-                    id: "events",
-                    label: "Events",
-                    icon: "fas fa-calendar-star",
-                    path: "/schedule/events",
-                },
-                {
-                    id: "routine",
-                    label: "Daily Routine",
-                    icon: "fas fa-clock",
-                    path: "/schedule/routine",
-                },
-            ],
-        },
+        // {
+        //     id: "schedule",
+        //     label: "Schedule",
+        //     icon: "fas fa-calendar-alt",
+        //     subItems: [
+        //         {
+        //             id: "timetable",
+        //             label: "Class Timetable",
+        //             icon: "fas fa-table",
+        //             path: "/timetable",
+        //         },
+        //         {
+        //             id: "exam-schedule",
+        //             label: "Exam Schedule",
+        //             icon: "fas fa-calendar-check",
+        //             path: "/schedule/exams",
+        //         },
+        //         {
+        //             id: "events",
+        //             label: "Events",
+        //             icon: "fas fa-calendar-star",
+        //             path: "/schedule/events",
+        //         },
+        //         {
+        //             id: "routine",
+        //             label: "Daily Routine",
+        //             icon: "fas fa-clock",
+        //             path: "/schedule/routine",
+        //         },
+        //     ],
+        // },
 
-        {
-            id: "finance",
-            label: "Finance",
-            icon: "fas fa-file-invoice-dollar",
-            subItems: [
-                {
-                    id: "fees",
-                    label: "Fee Management",
-                    icon: "fas fa-money-check-alt",
-                    subItems: [
-                        {
-                            id: "fee-collection",
-                            label: "Fee Collection",
-                            icon: "fas fa-cash-register",
-                            path: "/finance/fees/collection",
-                        },
-                        {
-                            id: "fee-structure",
-                            label: "Fee Structure",
-                            icon: "fas fa-list-alt",
-                            path: "/finance/fees/structure",
-                        },
-                        {
-                            id: "fee-due",
-                            label: "Due Fees",
-                            icon: "fas fa-exclamation-circle",
-                            path: "/finance/fees/due",
-                        },
-                        {
-                            id: "fee-discounts",
-                            label: "Discounts",
-                            icon: "fas fa-percentage",
-                            path: "/finance/fees/discounts",
-                        },
-                    ],
-                },
-                {
-                    id: "payroll",
-                    label: "Payroll",
-                    icon: "fas fa-receipt",
-                    subItems: [
-                        {
-                            id: "salary-sheet",
-                            label: "Salary Sheet",
-                            icon: "fas fa-file-invoice",
-                            path: "/finance/payroll/salary",
-                        },
-                        {
-                            id: "advances",
-                            label: "Salary Advances",
-                            icon: "fas fa-hand-holding-usd",
-                            path: "/finance/payroll/advances",
-                        },
-                        {
-                            id: "payroll-reports",
-                            label: "Reports",
-                            icon: "fas fa-chart-pie",
-                            path: "/finance/payroll/reports",
-                        },
-                    ],
-                },
-                {
-                    id: "accounting",
-                    label: "Accounting",
-                    icon: "fas fa-book",
-                    subItems: [
-                        {
-                            id: "expenses",
-                            label: "Expenses",
-                            icon: "fas fa-chart-line",
-                            path: "/finance/expenses",
-                        },
-                        {
-                            id: "income",
-                            label: "Income",
-                            icon: "fas fa-money-bill-wave",
-                            path: "/finance/income",
-                        },
-                        {
-                            id: "transactions",
-                            label: "Transactions",
-                            icon: "fas fa-exchange-alt",
-                            path: "/finance/transactions",
-                        },
-                    ],
-                },
-                {
-                    id: "finance-reports",
-                    label: "Reports",
-                    icon: "fas fa-chart-bar",
-                    path: "/finance/reports",
-                },
-            ],
-        },
+        // {
+        //     id: "finance",
+        //     label: "Finance",
+        //     icon: "fas fa-file-invoice-dollar",
+        //     subItems: [
+        //         {
+        //             id: "fees",
+        //             label: "Fee Management",
+        //             icon: "fas fa-money-check-alt",
+        //             subItems: [
+        //                 {
+        //                     id: "fee-collection",
+        //                     label: "Fee Collection",
+        //                     icon: "fas fa-cash-register",
+        //                     path: "/finance/fees/collection",
+        //                 },
+        //                 {
+        //                     id: "fee-structure",
+        //                     label: "Fee Structure",
+        //                     icon: "fas fa-list-alt",
+        //                     path: "/finance/fees/structure",
+        //                 },
+        //                 {
+        //                     id: "fee-due",
+        //                     label: "Due Fees",
+        //                     icon: "fas fa-exclamation-circle",
+        //                     path: "/finance/fees/due",
+        //                 },
+        //                 {
+        //                     id: "fee-discounts",
+        //                     label: "Discounts",
+        //                     icon: "fas fa-percentage",
+        //                     path: "/finance/fees/discounts",
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             id: "payroll",
+        //             label: "Payroll",
+        //             icon: "fas fa-receipt",
+        //             subItems: [
+        //                 {
+        //                     id: "salary-sheet",
+        //                     label: "Salary Sheet",
+        //                     icon: "fas fa-file-invoice",
+        //                     path: "/finance/payroll/salary",
+        //                 },
+        //                 {
+        //                     id: "advances",
+        //                     label: "Salary Advances",
+        //                     icon: "fas fa-hand-holding-usd",
+        //                     path: "/finance/payroll/advances",
+        //                 },
+        //                 {
+        //                     id: "payroll-reports",
+        //                     label: "Reports",
+        //                     icon: "fas fa-chart-pie",
+        //                     path: "/finance/payroll/reports",
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             id: "accounting",
+        //             label: "Accounting",
+        //             icon: "fas fa-book",
+        //             subItems: [
+        //                 {
+        //                     id: "expenses",
+        //                     label: "Expenses",
+        //                     icon: "fas fa-chart-line",
+        //                     path: "/finance/expenses",
+        //                 },
+        //                 {
+        //                     id: "income",
+        //                     label: "Income",
+        //                     icon: "fas fa-money-bill-wave",
+        //                     path: "/finance/income",
+        //                 },
+        //                 {
+        //                     id: "transactions",
+        //                     label: "Transactions",
+        //                     icon: "fas fa-exchange-alt",
+        //                     path: "/finance/transactions",
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             id: "finance-reports",
+        //             label: "Reports",
+        //             icon: "fas fa-chart-bar",
+        //             path: "/finance/reports",
+        //         },
+        //     ],
+        // },
 
         {
             id: "reports",
@@ -540,26 +343,27 @@ const MainLayout: React.FC = () => {
                     id: "academic-reports",
                     label: "Academic Reports",
                     icon: "fas fa-graduation-cap",
-                    subItems: [
-                        {
-                            id: "attendance-reports",
-                            label: "Attendance Reports",
-                            icon: "fas fa-clipboard-list",
-                            path: "/reports/attendance",
-                        },
-                        {
-                            id: "exam-reports",
-                            label: "Exam Reports",
-                            icon: "fas fa-file-alt",
-                            path: "/reports/exams",
-                        },
-                        {
-                            id: "student-progress",
-                            label: "Student Progress",
-                            icon: "fas fa-chart-line",
-                            path: "/reports/progress",
-                        },
-                    ],
+                    path: "/reports/academic",
+                    // subItems: [
+                    //     {
+                    //         id: "attendance-reports",
+                    //         label: "Attendance Reports",
+                    //         icon: "fas fa-clipboard-list",
+                    //         path: "/reports/attendance",
+                    //     },
+                    //     {
+                    //         id: "exam-reports",
+                    //         label: "Exam Reports",
+                    //         icon: "fas fa-file-alt",
+                    //         path: "/reports/exams",
+                    //     },
+                    //     {
+                    //         id: "student-progress",
+                    //         label: "Student Progress",
+                    //         icon: "fas fa-chart-line",
+                    //         path: "/reports/progress",
+                    //     },
+                    // ],
                 },
                 {
                     id: "student-reports",
@@ -578,12 +382,6 @@ const MainLayout: React.FC = () => {
                     label: "Financial Reports",
                     icon: "fas fa-file-invoice-dollar",
                     path: "/reports/finance",
-                },
-                {
-                    id: "analytics",
-                    label: "Analytics Dashboard",
-                    icon: "fas fa-chart-network",
-                    path: "/reports/analytics",
                 },
             ],
         },
@@ -666,19 +464,6 @@ const MainLayout: React.FC = () => {
             (subItem.path && location.pathname === subItem.path)
         );
     };
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const res = await request("userprofile");
-                // console.log(res);
-            } catch (err: any) {
-                console.error(err, "Failed to request UserProfile");
-            } finally {
-                console.log("Request succee");
-            }
-        };
-        fetchUserProfile();
-    }, []);
 
     const getTextClassForItem = (item: MenuItem) =>
         isMenuItemActive(item) ? "text-yellow-300" : "text-white";
