@@ -9,15 +9,16 @@ interface User {
     // firstName: string;
     // lastName: string;
     email: string;
-    user_id: string;
-    role_id: string;
+    user_id?: string;
+    role_id?: string;
     // status: "active" | "inactive";
     // lastLogin: string;
     createdAt: string;
+    updatedAt?: string;
 }
 interface Role {
     id: string;
-    role_id: string;
+    role_id?: string;
     name: string;
 }
 

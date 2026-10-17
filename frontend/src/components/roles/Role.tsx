@@ -7,7 +7,7 @@ interface Role {
     id: string;
     name: string;
     key: string;
-    prev: string;
+    prev?: string;
     description: string;
     permissions: string[];
     createdAt: string;

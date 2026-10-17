@@ -287,10 +287,12 @@ const StudentClassSessionAttendancePage: React.FC = () => {
             0,
         ),
     };
-    stats.attendanceRate = (
-        (stats.attended / stats.totalSessions) *
-        100
-    ).toFixed(1);
+    stats.attendanceRate = Number(
+        (
+            (stats.attended / (stats.totalSessions || 1)) *
+            100
+        ).toFixed(1),
+    );
 
     // Filter sessions
     const filteredSessions = classSessions.filter((session) => {
