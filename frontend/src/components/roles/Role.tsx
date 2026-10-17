@@ -7,7 +7,7 @@ interface Role {
     id: string;
     name: string;
     key: string;
-    prev: string;
+    prev?: string;
     description: string;
     permissions: string[];
     createdAt: string;
@@ -26,7 +26,7 @@ interface Permission {
 const RolesPage: React.FC = () => {
     const [roles, setRoles] = useState<Role[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     useEffect(() => {
         const fetchRoles = async () => {
             setLoading(true);

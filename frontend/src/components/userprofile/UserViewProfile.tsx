@@ -53,7 +53,7 @@ const UserViewProfile: React.FC<ProfileFormProps> = ({
     };
 
     const handleEmergencyContactChange = (
-        field: keyof StudentProfile["emergencyContact"],
+        field: "name" | "phone" | "relationship",
         value: string,
     ) => {
         setEditedProfile((prev) => ({

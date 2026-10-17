@@ -3,13 +3,14 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import FooterPage from "../common/FooterPage";
 import HeaderPage from "../common/HeaderPage";
 import { useAuth } from "../../contexts/AuthCotext";
-import { request } from "../utils/Request";
 
 interface MenuItem {
     id: string;
     label: string;
     icon: string;
     path?: string;
+    /** shown only if the user has ANY of these permissions (omit = everyone) */
+    permission?: string[];
     subItems?: MenuItem[];
 }
 
@@ -25,400 +26,66 @@ const MainLayout: React.FC = () => {
         navigate(to);
     };
 
-    const { user } = useAuth();
+    const { user, hasPermission, refreshUser } = useAuth();
+    // pick up role/permission changes made since the last login
     useEffect(() => {
-        if (!user?.token) return;
-
-        const fetchUserProfile = async () => {
-            await request("userprofile");
-        };
-
-        fetchUserProfile();
+        if (user?.token) refreshUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.token]);
 
     const menuItems: MenuItem[] = [
-        {
-            id: "dashboard",
-            label: "Dashboard",
-            icon: "fas fa-home",
-            path: "/",
-        },
+        { id: "dashboard", label: "Dashboard", icon: "fas fa-home", path: "/" },
         {
             id: "users",
             label: "Manage Users",
             icon: "fas fa-users-cog",
             subItems: [
-                {
-                    id: "all-users",
-                    label: "All Users",
-                    icon: "fas fa-users",
-                    path: "/user",
-                },
-                {
-                    id: "roles",
-                    label: "Roles",
-                    icon: "fas fa-user-shield",
-                    path: "/role",
-                },
-                {
-                    id: "permissions",
-                    label: "Permissions",
-                    icon: "fas fa-key",
-                    path: "/permission",
-                },
-                {
-                    id: "user-activity",
-                    label: "User Activity",
-                    icon: "fas fa-history",
-                    path: "/users/activity",
-                },
+                { id: "all-users", label: "All Users", icon: "fas fa-users", path: "/user", permission: ["user.view"] },
+                { id: "roles", label: "Roles", icon: "fas fa-user-shield", path: "/role", permission: ["role.view"] },
+                { id: "permissions", label: "Permissions", icon: "fas fa-key", path: "/permission", permission: ["permission.view"] },
             ],
         },
         {
             id: "teachers",
-            label: "Manage Teachers",
+            label: "Teachers",
             icon: "fas fa-chalkboard-teacher",
-            subItems: [
-                {
-                    id: "all-teachers",
-                    label: "All Teachers",
-                    icon: "fas fa-users",
-                    path: "/teachers",
-                },
-                {
-                    id: "teacher-attendance",
-                    label: "Teacher Attendance",
-                    icon: "fas fa-clipboard-check",
-                    path: "/teachers/attendance",
-                },
-            ],
+            permission: ["teacher.view"],
+            path: "/teachers",
         },
         {
             id: "students",
-            label: "Manage Students",
+            label: "Students",
             icon: "fas fa-user-graduate",
             subItems: [
-                {
-                    id: "all-students",
-                    label: "All Students",
-                    icon: "fas fa-users",
-                    path: "/students",
-                },
-                {
-                    id: "student-attendance",
-                    label: "Student Attendance",
-                    icon: "fas fa-clipboard-check",
-                    path: "/attendance/studentClassSessionAttendance",
-                },
-                {
-                    id: "student-blacklist",
-                    label: "Student Blacklist",
-                    icon: "fas fa-user-times",
-                    path: "/students/blacklist",
-                },
+                { id: "all-students", label: "All Students", icon: "fas fa-users", path: "/students", permission: ["student.view"] },
+                { id: "student-blacklist", label: "Blacklist", icon: "fas fa-user-times", path: "/students/blacklist", permission: ["blacklist.view"] },
             ],
         },
-        {
-            id: "classes",
-            label: "Manage Classes",
-            icon: "fas fa-school",
-            subItems: [
-                {
-                    id: "all-classes",
-                    label: "All Classes",
-                    icon: "fas fa-chalkboard",
-                    path: "/classes",
-                },
-                {
-                    id: "class-teacher",
-                    label: "Class Teachers",
-                    icon: "fas fa-user-tie",
-                    path: "/classes/teachers",
-                },
-                {
-                    id: "subjects",
-                    label: "Subjects",
-                    icon: "fas fa-book-open",
-                    path: "/subjects",
-                },
-            ],
-        },
-        {
-            id: "terms",
-            label: "Manage Terms",
-            icon: "fas fa-school",
-            subItems: [
-                {
-                    id: "all-terms",
-                    label: "All Terms",
-                    icon: "fas fa-chalkboard",
-                    path: "/terms",
-                },
-            ],
-        },
+        { id: "classes", label: "Classes", icon: "fas fa-school", path: "/classes", permission: ["class.view"] },
+        { id: "terms", label: "Academic Calendar", icon: "fas fa-calendar-alt", path: "/terms", permission: ["term.view"] },
         {
             id: "attendance",
             label: "Attendance",
             icon: "fas fa-clipboard-list",
             subItems: [
-                {
-                    id: "daily-attendance",
-                    label: "Daily Attendance",
-                    icon: "fas fa-calendar-day",
-                    path: "/attendance/daily",
-                },
-                {
-                    id: "class-attendance",
-                    label: "Class Attendance",
-                    icon: "fas fa-users",
-                    path: "/classAttendance",
-                },
-                {
-                    id: "attendance-report",
-                    label: "Attendance Report",
-                    icon: "fas fa-chart-bar",
-                    path: "/attendance/report",
-                },
-            ],
-        },
-        // {
-        //     id: "examinations",
-        //     label: "Examinations",
-        //     icon: "fas fa-file-alt",
-        //     subItems: [
-        //         {
-        //             id: "exam-schedule",
-        //             label: "Exam Schedule",
-        //             icon: "fas fa-calendar",
-        //             path: "/exams/schedule",
-        //         },
-        //         {
-        //             id: "marks-entry",
-        //             label: "Marks Entry",
-        //             icon: "fas fa-edit",
-        //             path: "/exams/marks",
-        //         },
-        //         {
-        //             id: "results",
-        //             label: "Results",
-        //             icon: "fas fa-chart-line",
-        //             path: "/exams/results",
-        //         },
-        //     ],
-        // },
-
-        // {
-        //     id: "schedule",
-        //     label: "Schedule",
-        //     icon: "fas fa-calendar-alt",
-        //     subItems: [
-        //         {
-        //             id: "timetable",
-        //             label: "Class Timetable",
-        //             icon: "fas fa-table",
-        //             path: "/timetable",
-        //         },
-        //         {
-        //             id: "exam-schedule",
-        //             label: "Exam Schedule",
-        //             icon: "fas fa-calendar-check",
-        //             path: "/schedule/exams",
-        //         },
-        //         {
-        //             id: "events",
-        //             label: "Events",
-        //             icon: "fas fa-calendar-star",
-        //             path: "/schedule/events",
-        //         },
-        //         {
-        //             id: "routine",
-        //             label: "Daily Routine",
-        //             icon: "fas fa-clock",
-        //             path: "/schedule/routine",
-        //         },
-        //     ],
-        // },
-
-        // {
-        //     id: "finance",
-        //     label: "Finance",
-        //     icon: "fas fa-file-invoice-dollar",
-        //     subItems: [
-        //         {
-        //             id: "fees",
-        //             label: "Fee Management",
-        //             icon: "fas fa-money-check-alt",
-        //             subItems: [
-        //                 {
-        //                     id: "fee-collection",
-        //                     label: "Fee Collection",
-        //                     icon: "fas fa-cash-register",
-        //                     path: "/finance/fees/collection",
-        //                 },
-        //                 {
-        //                     id: "fee-structure",
-        //                     label: "Fee Structure",
-        //                     icon: "fas fa-list-alt",
-        //                     path: "/finance/fees/structure",
-        //                 },
-        //                 {
-        //                     id: "fee-due",
-        //                     label: "Due Fees",
-        //                     icon: "fas fa-exclamation-circle",
-        //                     path: "/finance/fees/due",
-        //                 },
-        //                 {
-        //                     id: "fee-discounts",
-        //                     label: "Discounts",
-        //                     icon: "fas fa-percentage",
-        //                     path: "/finance/fees/discounts",
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             id: "payroll",
-        //             label: "Payroll",
-        //             icon: "fas fa-receipt",
-        //             subItems: [
-        //                 {
-        //                     id: "salary-sheet",
-        //                     label: "Salary Sheet",
-        //                     icon: "fas fa-file-invoice",
-        //                     path: "/finance/payroll/salary",
-        //                 },
-        //                 {
-        //                     id: "advances",
-        //                     label: "Salary Advances",
-        //                     icon: "fas fa-hand-holding-usd",
-        //                     path: "/finance/payroll/advances",
-        //                 },
-        //                 {
-        //                     id: "payroll-reports",
-        //                     label: "Reports",
-        //                     icon: "fas fa-chart-pie",
-        //                     path: "/finance/payroll/reports",
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             id: "accounting",
-        //             label: "Accounting",
-        //             icon: "fas fa-book",
-        //             subItems: [
-        //                 {
-        //                     id: "expenses",
-        //                     label: "Expenses",
-        //                     icon: "fas fa-chart-line",
-        //                     path: "/finance/expenses",
-        //                 },
-        //                 {
-        //                     id: "income",
-        //                     label: "Income",
-        //                     icon: "fas fa-money-bill-wave",
-        //                     path: "/finance/income",
-        //                 },
-        //                 {
-        //                     id: "transactions",
-        //                     label: "Transactions",
-        //                     icon: "fas fa-exchange-alt",
-        //                     path: "/finance/transactions",
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             id: "finance-reports",
-        //             label: "Reports",
-        //             icon: "fas fa-chart-bar",
-        //             path: "/finance/reports",
-        //         },
-        //     ],
-        // },
-
-        {
-            id: "reports",
-            label: "Reports & Analytics",
-            icon: "fas fa-chart-pie",
-            subItems: [
-                {
-                    id: "academic-reports",
-                    label: "Academic Reports",
-                    icon: "fas fa-graduation-cap",
-                    path: "/reports/academic",
-                    // subItems: [
-                    //     {
-                    //         id: "attendance-reports",
-                    //         label: "Attendance Reports",
-                    //         icon: "fas fa-clipboard-list",
-                    //         path: "/reports/attendance",
-                    //     },
-                    //     {
-                    //         id: "exam-reports",
-                    //         label: "Exam Reports",
-                    //         icon: "fas fa-file-alt",
-                    //         path: "/reports/exams",
-                    //     },
-                    //     {
-                    //         id: "student-progress",
-                    //         label: "Student Progress",
-                    //         icon: "fas fa-chart-line",
-                    //         path: "/reports/progress",
-                    //     },
-                    // ],
-                },
-                {
-                    id: "student-reports",
-                    label: "Student Reports",
-                    icon: "fas fa-user-graduate",
-                    path: "/reports/students",
-                },
-                {
-                    id: "teacher-reports",
-                    label: "Teacher Reports",
-                    icon: "fas fa-chalkboard-teacher",
-                    path: "/reports/teachers",
-                },
-                {
-                    id: "finance-reports",
-                    label: "Financial Reports",
-                    icon: "fas fa-file-invoice-dollar",
-                    path: "/reports/finance",
-                },
+                { id: "daily-attendance", label: "Take Attendance", icon: "fas fa-calendar-day", path: "/attendance/daily", permission: ["attendance.record"] },
+                { id: "attendance-report", label: "Report", icon: "fas fa-chart-bar", path: "/attendance/report", permission: ["attendance.report"] },
+                { id: "my-attendance", label: "My Attendance", icon: "fas fa-user-check", path: "/classAttendance", permission: ["attendance.view-own"] },
             ],
         },
     ];
-    const filteredMenuItems = menuItems.filter((item) => {
-        const isStudent = user?.roles?.some(
-            (role: any) => role?.key === "student",
+
+    // Keep an item only if the user may use it; parents with no visible children disappear.
+    const canSee = (item: MenuItem) => !item.permission || hasPermission(...item.permission);
+    const filteredMenuItems = menuItems
+        .map((item) =>
+            item.subItems
+                ? { ...item, subItems: item.subItems.filter(canSee) }
+                : item,
+        )
+        .filter((item) =>
+            item.subItems ? item.subItems.length > 0 : canSee(item),
         );
-        const isTeacher = user?.roles?.some(
-            (role: any) => role?.key === "teacher",
-        );
-        const isAdmin = user?.roles?.some((role: any) => role?.key === "admin");
-
-        const hiddenForStudents = [
-            "dashboard",
-            "users",
-            "teachers",
-            "classes",
-            "finance",
-            "reports",
-            "settings",
-        ];
-        const hiddenForTeacher = [
-            "dashboard",
-            "teachers",
-            "finance",
-            "reports",
-            "users",
-        ];
-        const hiddenForAdmin = ["dashboard", "users"];
-
-        if (isStudent && hiddenForStudents.includes(item.id)) return false;
-        if (isTeacher && hiddenForTeacher.includes(item.id)) return false;
-        if (isAdmin && hiddenForAdmin.includes(item.id)) return false;
-
-        return true; // keep the item if no conditions match
-    });
 
     const toggleSubMenu = (menuId: string) => {
         setOpenSubMenus((prev) => {

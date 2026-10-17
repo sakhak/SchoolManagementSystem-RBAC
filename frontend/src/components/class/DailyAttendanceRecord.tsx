@@ -197,8 +197,8 @@ const StudentDailyAttendancePage: React.FC = () => {
             .filter((s) => s.status === "leave").length,
         attendanceRate: 0,
     };
-    stats.attendanceRate = ((stats.present / stats.totalClasses) * 100).toFixed(
-        1,
+    stats.attendanceRate = Number(
+        ((stats.present / stats.totalClasses) * 100).toFixed(1),
     );
 
     return (

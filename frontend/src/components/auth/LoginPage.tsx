@@ -30,25 +30,13 @@ const LoginPage: React.FC = () => {
         try {
             const res = await request("login", "post", parm);
 
-            console.log(res.userprofile);
-
             if (res && res.access_token && res.data) {
                 login({
                     ...res.data,
                     token: res.access_token,
                 });
 
-                const userRoles = res.data.roles.map((role: any) => role?.key);
-
-                if (userRoles.includes("admin")) {
-                    navigate("/student");
-                } else if (userRoles.includes("student")) {
-                    navigate("/student");
-                } else if (userRoles.includes("teacher")) {
-                    navigate("/teacher");
-                } else {
-                    navigate("/");
-                }
+                navigate("/");
             } else {
                 alert("Invalid credentials (missing token or user)");
             }

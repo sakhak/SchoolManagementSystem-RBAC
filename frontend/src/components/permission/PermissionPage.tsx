@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { request } from "../utils/Request";
 import { formatDate } from "../utils/Helper";
-import { ThreeDots } from "react-loader-spinner";
 import FullScreenLoader from "../common/FullScreenLoader";
 
 interface Permission {
@@ -16,7 +15,7 @@ interface Permission {
 
 const PermissionsPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     const [permissions, setPermissions] = useState<Permission[]>([]);
     useEffect(() => {
         const fetchPermissions = async () => {

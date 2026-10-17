@@ -9,7 +9,7 @@ interface User {
     // firstName: string;
     // lastName: string;
     email: string;
-    user_id: string;
+    user_id?: string;
     role_id: string;
     // status: "active" | "inactive";
     // lastLogin: string;
@@ -17,13 +17,13 @@ interface User {
 }
 interface Role {
     id: string;
-    role_id: string;
+    role_id?: string;
     name: string;
 }
 
 const UsersPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     const [roles, setRoles] = useState<Role[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     useEffect(() => {

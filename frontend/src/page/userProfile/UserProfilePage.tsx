@@ -1,4 +1,3 @@
-import React from "react";
 import UserViewProfile from "../../components/userprofile/UserViewProfile";
 const studentProfileData = {
     id: "1",
