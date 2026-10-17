@@ -1,6 +1,5 @@
 // ...existing code...
 import React, { useEffect, useRef, useState } from "react";
-import sakhakimage from "../../assets/images/loeung Sakhak.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthCotext";
 import { config } from "../utils/Config";

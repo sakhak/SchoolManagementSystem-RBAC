@@ -13,7 +13,11 @@ class UserProfileController extends Controller
      */
     public function index()
     {
-        $userProfile = UserProfile::all();
+        // everyone sees their own profile; only users who may view users see all profiles
+        $user = request()->user();
+        $userProfile = $user->hasPermission('user.view')
+            ? UserProfile::all()
+            : UserProfile::where('user_id', $user->id)->get();
         return response()->json([
             'data' => $userProfile
         ]);
@@ -49,7 +53,7 @@ class UserProfileController extends Controller
             ->store('profile_images', 'public');
     }
 
-    $profile = UserProfile::create($validated);
+    $profile = UserProfile::updateOrCreate(['user_id' => $validated['user_id']], $validated);
 
 
     return response()->json([

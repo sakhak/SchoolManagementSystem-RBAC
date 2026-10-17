@@ -2,23 +2,29 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-         $roles = Role::roles;
-        foreach($roles as $role){
-            Role::create([
-                'name' => $role['name'],
-                'key'  => $role['key']
-            ]);
+        foreach (Role::roles as $role) {
+            Role::firstOrCreate(
+                ['key' => $role['key']],
+                ['name' => $role['name']]
+            );
+        }
+
+        // Attach default permissions (super_admin bypasses checks in code)
+        foreach (Role::defaultPermissions() as $roleKey => $permissionKeys) {
+            $role = Role::where('key', $roleKey)->first();
+            if (!$role) {
+                continue;
+            }
+            $ids = Permission::whereIn('key', $permissionKeys)->pluck('id');
+            $role->permissions()->syncWithoutDetaching($ids);
         }
     }
 }

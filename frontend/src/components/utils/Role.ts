@@ -1,12 +1,40 @@
-export const Role ={
+export const Role = {
     SUPER_ADMIN: "super_admin",
     ADMIN: "admin",
     TEACHER: "teacher",
     STUDENT: "student",
-}
+};
+
+// Keys must match backend app/Models/Permission.php
 export const Permission = {
-    USER_MANAGE_ROLE: "user_manage_role",
-    USER_VIEW: "user_view",
-    USER_CREATE: "user_create",
-    USER_UPDATE: "user_update"
-}
+    USER_VIEW: "user.view",
+    USER_CREATE: "user.create",
+    USER_UPDATE: "user.update",
+    USER_MANAGE_ROLE: "user.manage-role",
+    ROLE_VIEW: "role.view",
+    PERMISSION_VIEW: "permission.view",
+    STUDENT_VIEW: "student.view",
+    STUDENT_CREATE: "student.create",
+    STUDENT_UPDATE: "student.update",
+    STUDENT_DELETE: "student.delete",
+    TEACHER_VIEW: "teacher.view",
+    TEACHER_CREATE: "teacher.create",
+    TEACHER_UPDATE: "teacher.update",
+    TEACHER_DELETE: "teacher.delete",
+    CLASS_VIEW: "class.view",
+    CLASS_CREATE: "class.create",
+    CLASS_UPDATE: "class.update",
+    CLASS_DELETE: "class.delete",
+    CLASS_ASSIGN_TEACHER: "class.assign-teacher",
+    ENROLLMENT_CREATE: "enrollment.create",
+    ENROLLMENT_DELETE: "enrollment.delete",
+    TERM_VIEW: "term.view",
+    TERM_MANAGE: "term.manage",
+    ACADEMIC_YEAR_MANAGE: "academic-year.manage",
+    SESSION_MANAGE: "session.manage",
+    ATTENDANCE_RECORD: "attendance.record",
+    ATTENDANCE_REPORT: "attendance.report",
+    ATTENDANCE_VIEW_OWN: "attendance.view-own",
+    BLACKLIST_VIEW: "blacklist.view",
+    BLACKLIST_MANAGE: "blacklist.manage",
+};

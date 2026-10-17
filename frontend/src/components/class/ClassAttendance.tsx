@@ -7,8 +7,6 @@ import {
     TrendingUp,
     TrendingDown,
     Download,
-    Filter,
-    Calendar,
 } from "lucide-react";
 
 interface ClassAttendance {

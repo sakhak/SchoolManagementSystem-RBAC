@@ -16,7 +16,10 @@ class Student extends Model
         return $this->belongsTo(User::class,'user_id','id');
     }
     public function enrollments(){
-        return $this->hasOne(Enrollment::class,'student_id','id');
+        return $this->hasMany(Enrollment::class,'student_id','id');
+    }
+    public function classes(){
+        return $this->belongsToMany(ClassModel::class, 'enrollments', 'student_id', 'class_id')->withPivot('enrolled_on');
     }
     public function attendanceRecords(){
         return $this->hasMany(AttendanceRecord::class,'student_id','id');

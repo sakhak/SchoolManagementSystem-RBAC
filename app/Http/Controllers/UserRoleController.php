@@ -27,7 +27,11 @@ class UserRoleController extends Controller
             'user_id' => ['required', 'exists:users,id'],
             'role_id' => ['required', 'exists:roles,id'],
         ]);
-        $userRole = UserRole::create($validated);
+        // one role per user (unique user_id): assigning again replaces the role
+        $userRole = UserRole::updateOrCreate(
+            ['user_id' => $validated['user_id']],
+            ['role_id' => $validated['role_id']]
+        );
         return response()->json([
             'data' => $userRole,
             'message' => 'Role assigned to user successfully',
@@ -48,55 +52,6 @@ class UserRoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // public function update(Request $request, string $id)
-    // {
-    //     $userRole = UserRole::findOrFail($id);
-    //     $validated = $request->validate([
-    //         'user_id' => ['required', 'exists:users,id'. $id],
-    //         'role_id' => ['required', 'exists:roles,id'],
-    //     ]);
-    //     $existID = $validated['user_id'];
-    //     // $show =UserRole::where("role_id",$id)->delete();
-    //     $exists = UserRole::where('role_id', $existID)
-    //     ->where('role_id', $existID)->exists();
-    //     $userRole = UserRole::create($validated);
-    //     if($exists){
-    //         return response()->json([
-    //             'data' => "User already assign role"
-    //         ]);
-    //     }
-        
-    //     return response()->json([
-    //         'data' => $userRole,
-    //         'message' => 'Role assigned to user successfully',
-    //     ], 201);
-    // }
-//    public function update(Request $request, string $id)
-// {
-//     $validated = $request->validate([
-//         'user_id' => ['required', 'exists:users,id'],
-//         'role_id' => ['required', 'exists:roles,id'],
-//     ]);
-
-//      $userRole = UserRole::where('user_id', $validated['user_id'])->first();
-
-//     if ($userRole && $userRole->role_id == $validated['role_id']) {
-//         return response()->json([
-//             'message' => 'User already has this role',
-//         ], 409);
-//     }
-
-//     if ($userRole) {
-//         $userRole->update([
-//             'role_id' => $validated['role_id'],
-//         ]);
-//     }
-
-//     return response()->json([
-//         'data' => $userRole,
-//         'message' => 'Role updated successfully',
-//     ]);
-// }
 public function update(Request $request)
 {
     $validated = $request->validate([

@@ -288,10 +288,7 @@ const StudentClassSessionAttendancePage: React.FC = () => {
         ),
     };
     stats.attendanceRate = Number(
-        (
-            (stats.attended / (stats.totalSessions || 1)) *
-            100
-        ).toFixed(1),
+        ((stats.attended / (stats.totalSessions || 1)) * 100).toFixed(1),
     );
 
     // Filter sessions
@@ -922,7 +919,7 @@ const StudentClassSessionAttendancePage: React.FC = () => {
                     Upcoming Classes This Week
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {["Wednesday", "Thursday", "Friday"].map((day, index) => {
+                    {["Wednesday", "Thursday", "Friday"].map((day) => {
                         const daySessions = classSessions.filter(
                             (s) =>
                                 new Date(s.date).toLocaleDateString("en-US", {

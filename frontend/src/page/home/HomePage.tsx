@@ -1,305 +1,356 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { request } from "../../components/utils/Request";
 import { useAuth } from "../../contexts/AuthCotext";
 
-interface QuickAction {
-    label: string;
-    icon: string;
-    color: string;
-    onClick?: () => void;
+interface DashboardSession {
+    id: number;
+    session_date: string;
+    status: string;
+    class?: { name: string };
+    teacher?: { user?: { name: string } };
 }
 
-interface Activity {
-    title: string;
-    description: string;
-    time: string;
-    color: string;
-}
-
-interface Stat {
-    label: string;
-    value: string;
-    icon: string;
-    color: string;
+interface DashboardStats {
+    students: number | null;
+    teachers: number | null;
+    classes: number | null;
+    attendanceRate: number | null;
 }
 
 const HomePage: React.FC = () => {
-    const colorClasses: Record<
-        string,
-        {
-            border: string;
-            text: string;
-            bg: string;
-            hoverBorder: string;
-            hoverBg: string;
+    const navigate = useNavigate();
+    const { user, hasPermission, hasRole } = useAuth();
+    const canViewStudents = hasPermission("student.view");
+    const canViewTeachers = hasPermission("teacher.view");
+    const canViewClasses = hasPermission("class.view");
+    const canViewSessions = hasPermission("session.view");
+    const canViewAttendanceReport = hasPermission("attendance.report");
+    const [stats, setStats] = useState<DashboardStats>({
+        students: null,
+        teachers: null,
+        classes: null,
+        attendanceRate: null,
+    });
+    const [sessions, setSessions] = useState<DashboardSession[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        if (!user?.token) return;
+
+        let cancelled = false;
+        const now = new Date();
+        const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+        const requests: Promise<unknown>[] = [];
+
+        setLoading(true);
+        setError("");
+
+        if (canViewStudents) {
+            requests.push(
+                request("students?per_page=1").then((result) => {
+                    if (!cancelled) {
+                        setStats((current) => ({
+                            ...current,
+                            students: Number(result.total ?? 0),
+                        }));
+                    }
+                }),
+            );
         }
-    > = {
-        blue: {
-            border: "border-blue-500",
-            text: "text-blue-500",
-            bg: "bg-blue-50",
-            hoverBorder: "hover:border-blue-500",
-            hoverBg: "hover:bg-blue-50",
-        },
-        green: {
-            border: "border-green-500",
-            text: "text-green-500",
-            bg: "bg-green-50",
-            hoverBorder: "hover:border-green-500",
-            hoverBg: "hover:bg-green-50",
-        },
-        purple: {
-            border: "border-purple-500",
-            text: "text-purple-500",
-            bg: "bg-purple-50",
-            hoverBorder: "hover:border-purple-500",
-            hoverBg: "hover:bg-purple-50",
-        },
-        yellow: {
-            border: "border-yellow-500",
-            text: "text-yellow-500",
-            bg: "bg-yellow-50",
-            hoverBorder: "hover:border-yellow-500",
-            hoverBg: "hover:bg-yellow-50",
-        },
-    };
+        if (canViewTeachers) {
+            requests.push(
+                request("teachers?per_page=1").then((result) => {
+                    if (!cancelled) {
+                        setStats((current) => ({
+                            ...current,
+                            teachers: Number(result.total ?? 0),
+                        }));
+                    }
+                }),
+            );
+        }
+        if (canViewClasses) {
+            requests.push(
+                request("classes").then((result) => {
+                    if (!cancelled) {
+                        setStats((current) => ({
+                            ...current,
+                            classes: Array.isArray(result.data)
+                                ? result.data.length
+                                : 0,
+                        }));
+                    }
+                }),
+            );
+        }
+        if (canViewAttendanceReport) {
+            requests.push(
+                request(`attendance/report?from=${today}&to=${today}`).then(
+                    (result) => {
+                        if (!cancelled) {
+                            const rows = Array.isArray(result.data)
+                                ? result.data
+                                : [];
+                            const totals = rows.reduce(
+                                (
+                                    sum: { present: number; total: number },
+                                    row: { present?: number; total?: number },
+                                ) => ({
+                                    present:
+                                        sum.present + Number(row.present || 0),
+                                    total: sum.total + Number(row.total || 0),
+                                }),
+                                { present: 0, total: 0 },
+                            );
+                            setStats((current) => ({
+                                ...current,
+                                attendanceRate:
+                                    totals.total > 0
+                                        ? Math.round(
+                                              (totals.present / totals.total) *
+                                                  100,
+                                          )
+                                        : null,
+                            }));
+                        }
+                    },
+                ),
+            );
+        }
+        if (canViewSessions) {
+            requests.push(
+                request(`class-sessions?from=${today}`).then((result) => {
+                    if (!cancelled) {
+                        setSessions(
+                            Array.isArray(result.data) ? result.data : [],
+                        );
+                    }
+                }),
+            );
+        }
 
-    const quickActions: QuickAction[] = [
-        {
-            label: "Add Student",
-            icon: "fas fa-user-plus",
-            color: "blue",
-            onClick: () => console.log("Add Student clicked"),
-        },
-        {
-            label: "Generate Report",
-            icon: "fas fa-file-invoice",
-            color: "green",
-            onClick: () => console.log("Generate Report clicked"),
-        },
-        {
-            label: "Create Event",
-            icon: "fas fa-calendar-plus",
-            color: "purple",
-            onClick: () => console.log("Create Event clicked"),
-        },
-        {
-            label: "Send Notice",
-            icon: "fas fa-bullhorn",
-            color: "yellow",
-            onClick: () => console.log("Send Notice clicked"),
-        },
-    ];
+        Promise.allSettled(requests).then((results) => {
+            if (cancelled) return;
+            if (results.some((result) => result.status === "rejected")) {
+                setError("Some dashboard information could not be loaded.");
+            }
+            setLoading(false);
+        });
 
-    const recentActivities: Activity[] = [
-        {
-            title: "New student registration",
-            description: "Emily Chen joined Grade 5",
-            time: "2 hours ago",
-            color: "blue",
-        },
-        {
-            title: "Assignment submitted",
-            description: "Math homework by Grade 8",
-            time: "4 hours ago",
-            color: "green",
-        },
-    ];
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        user?.token,
+        canViewStudents,
+        canViewTeachers,
+        canViewClasses,
+        canViewSessions,
+        canViewAttendanceReport,
+    ]);
 
-    const stats: Stat[] = [
+    const statCards = [
         {
             label: "Total Students",
-            value: "1,247",
+            value: canViewStudents
+                ? (stats.students?.toLocaleString() ?? (loading ? "..." : "0"))
+                : "-",
             icon: "fas fa-users",
-            color: "blue",
+            color: "border-blue-500 text-blue-500",
         },
         {
             label: "Teachers",
-            value: "68",
+            value: canViewTeachers
+                ? (stats.teachers?.toLocaleString() ?? (loading ? "..." : "0"))
+                : "-",
             icon: "fas fa-chalkboard-teacher",
-            color: "green",
+            color: "border-green-500 text-green-500",
         },
         {
             label: "Classes",
-            value: "42",
+            value: canViewClasses
+                ? (stats.classes?.toLocaleString() ?? (loading ? "..." : "0"))
+                : "-",
             icon: "fas fa-book",
-            color: "purple",
+            color: "border-purple-500 text-purple-500",
         },
         {
             label: "Attendance Today",
-            value: "94%",
+            value: canViewAttendanceReport
+                ? stats.attendanceRate === null
+                    ? loading
+                        ? "..."
+                        : "No records"
+                    : `${stats.attendanceRate}%`
+                : "-",
             icon: "fas fa-calendar-check",
-            color: "yellow",
+            color: "border-yellow-500 text-yellow-500",
         },
     ];
 
-    const handleQuickAction = (action: QuickAction) => {
-        if (action.onClick) {
-            action.onClick();
-        }
-        console.log(`Action: ${action.label}`);
-    };
+    const quickActions = [
+        {
+            label: "Manage Students",
+            icon: "fas fa-user-graduate",
+            path: "/students",
+            visible: canViewStudents,
+        },
+        {
+            label: "Take Attendance",
+            icon: "fas fa-calendar-check",
+            path: "/attendance/daily",
+            visible: hasPermission("attendance.record"),
+        },
+        {
+            label: "Manage Classes",
+            icon: "fas fa-school",
+            path: "/classes",
+            visible: canViewClasses,
+        },
+        {
+            label: "Attendance Report",
+            icon: "fas fa-chart-bar",
+            path: "/attendance/report",
+            visible: canViewAttendanceReport,
+        },
+        {
+            label: "My Attendance",
+            icon: "fas fa-user-check",
+            path: "/classAttendance",
+            visible: hasRole("student") && hasPermission("attendance.view-own"),
+        },
+    ].filter((action) => action.visible);
 
-    const handleStatClick = (stat: Stat) => {
-        console.log(`View details for: ${stat.label}`);
-    };
-
-    const handleActivityClick = (activity: Activity) => {
-        console.log(`View activity: ${activity.title}`);
-    };
-    const { user } = useAuth();
+    const upcomingSessions = sessions
+        .filter(
+            (session) =>
+                session.status === "scheduled" || session.status === "ongoing",
+        )
+        .sort((first, second) =>
+            first.session_date.localeCompare(second.session_date),
+        )
+        .slice(0, 5);
 
     return (
         <div className="bg-gray-50 font-sans">
-            <div className="flex h-screen">
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    <main className="flex-1 overflow-y-auto p-6 bg-gray-50 mt-[-20px]">
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                Welcome back, Dr. {user?.name}!
-                            </h1>
-                            <p className="text-gray-600">
-                                Here's what's happening at your school today.
+            <div className="mb-8">
+                <h1 className="mb-2 text-3xl font-bold text-gray-900">
+                    Welcome back, {user?.name ?? "there"}!
+                </h1>
+                <p className="text-gray-600">
+                    Here's what's happening at your school today.
+                </p>
+            </div>
+
+            {error && (
+                <p role="alert" className="mb-4 text-sm text-red-700">
+                    {error}
+                </p>
+            )}
+
+            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {statCards.map((stat) => (
+                    <div
+                        key={stat.label}
+                        className={`flex items-center justify-between rounded-lg border-l-4 bg-white p-6 shadow-sm ${stat.color}`}
+                    >
+                        <div>
+                            <p className="text-sm text-gray-600">
+                                {stat.label}
+                            </p>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {stat.value}
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                            {stats.map((stat, index) => (
+                        <i
+                            className={`${stat.icon} text-3xl`}
+                            aria-hidden="true"
+                        />
+                    </div>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                <section className="rounded-lg bg-white p-6 shadow-sm">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">
+                        Upcoming Sessions
+                    </h2>
+                    {!canViewSessions ? (
+                        <p className="text-sm text-gray-600">
+                            Session schedule is not available for this account.
+                        </p>
+                    ) : upcomingSessions.length === 0 ? (
+                        <p className="text-sm text-gray-600">
+                            {loading
+                                ? "Loading sessions..."
+                                : "No upcoming sessions."}
+                        </p>
+                    ) : (
+                        <div className="space-y-4">
+                            {upcomingSessions.map((session) => (
                                 <div
-                                    key={index}
-                                    className={`bg-white rounded-xl shadow-sm p-6 border-l-4 ${
-                                        colorClasses[stat.color]?.border
-                                    } cursor-pointer transition-all duration-200 hover:shadow-md`}
-                                    onClick={() => handleStatClick(stat)}
+                                    key={session.id}
+                                    className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-0"
                                 >
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm text-gray-600">
-                                                {stat.label}
-                                            </p>
-                                            <p className="text-2xl font-bold text-gray-900">
-                                                {stat.value}
-                                            </p>
-                                        </div>
-                                        <i
-                                            className={`${stat.icon} text-3xl ${
-                                                colorClasses[stat.color]?.text
-                                            }`}
-                                        ></i>
+                                    <div>
+                                        <p className="font-semibold text-gray-800">
+                                            {session.class?.name ??
+                                                "Class session"}
+                                        </p>
+                                        <p className="text-sm text-gray-600">
+                                            {session.teacher?.user?.name ??
+                                                "Teacher not assigned"}
+                                        </p>
                                     </div>
+                                    <time
+                                        className="shrink-0 text-sm text-gray-500"
+                                        dateTime={session.session_date}
+                                    >
+                                        {new Date(
+                                            `${session.session_date}T00:00:00`,
+                                        ).toLocaleDateString()}
+                                    </time>
                                 </div>
                             ))}
                         </div>
+                    )}
+                </section>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div className="bg-white rounded-xl shadow-sm p-6">
-                                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                                    Recent Activity
-                                </h2>
-                                <div className="space-y-4">
-                                    {recentActivities.map((activity, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                                            onClick={() =>
-                                                handleActivityClick(activity)
-                                            }
-                                        >
-                                            <div
-                                                className={`w-2 h-2 ${
-                                                    colorClasses[activity.color]
-                                                        ?.bg
-                                                } rounded-full mt-2 flex-shrink-0`}
-                                            ></div>
-                                            <div className="flex-1">
-                                                <p className="font-semibold text-gray-800">
-                                                    {activity.title}
-                                                </p>
-                                                <p className="text-sm text-gray-600">
-                                                    {activity.description}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    {activity.time}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="bg-white rounded-xl shadow-sm p-6">
-                                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                                    Quick Actions
-                                </h2>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {quickActions.map((action, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() =>
-                                                handleQuickAction(action)
-                                            }
-                                            className={`p-4 border-2 border-dashed border-gray-300 rounded-lg text-center transition-all duration-200 ${
-                                                colorClasses[action.color]
-                                                    ?.hoverBorder
-                                            } ${
-                                                colorClasses[action.color]
-                                                    ?.hoverBg
-                                            } hover:shadow-md`}
-                                        >
-                                            <i
-                                                className={`${
-                                                    action.icon
-                                                } text-2xl ${
-                                                    colorClasses[action.color]
-                                                        ?.text
-                                                } mb-2`}
-                                            ></i>
-                                            <p className="font-semibold text-gray-700">
-                                                {action.label}
-                                            </p>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                <section className="rounded-lg bg-white p-6 shadow-sm">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">
+                        Quick Actions
+                    </h2>
+                    {quickActions.length === 0 ? (
+                        <p className="text-sm text-gray-600">
+                            No quick actions are available for this account.
+                        </p>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            {quickActions.map((action) => (
+                                <button
+                                    key={action.path}
+                                    type="button"
+                                    onClick={() => navigate(action.path)}
+                                    className="rounded-md border border-gray-200 p-4 text-left transition-colors hover:border-blue-500 hover:bg-blue-50"
+                                >
+                                    <i
+                                        className={`${action.icon} mb-2 text-xl text-blue-600`}
+                                        aria-hidden="true"
+                                    />
+                                    <p className="font-semibold text-gray-800">
+                                        {action.label}
+                                    </p>
+                                </button>
+                            ))}
                         </div>
-
-                        <div className="mt-8 bg-white rounded-xl shadow-sm p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">
-                                System Overview
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <button
-                                    className="p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                                    onClick={() =>
-                                        console.log("View All Students")
-                                    }
-                                >
-                                    <i className="fas fa-users text-lg mb-2"></i>
-                                    <p className="font-semibold">
-                                        View All Students
-                                    </p>
-                                </button>
-                                <button
-                                    className="p-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                                    onClick={() =>
-                                        console.log("Manage Classes")
-                                    }
-                                >
-                                    <i className="fas fa-book text-lg mb-2"></i>
-                                    <p className="font-semibold">
-                                        Manage Classes
-                                    </p>
-                                </button>
-                                <button
-                                    className="p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
-                                    onClick={() => console.log("View Reports")}
-                                >
-                                    <i className="fas fa-chart-bar text-lg mb-2"></i>
-                                    <p className="font-semibold">
-                                        View Reports
-                                    </p>
-                                </button>
-                            </div>
-                        </div>
-                    </main>
-                </div>
+                    )}
+                </section>
             </div>
         </div>
     );
