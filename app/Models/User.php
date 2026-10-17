@@ -55,6 +55,27 @@ class User extends Authenticatable
     public function roles(){
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
+    public function roleKeys(): array
+    {
+        return $this->roles->pluck('key')->all();
+    }
+    public function hasRole(string ...$keys): bool
+    {
+        return count(array_intersect($keys, $this->roleKeys())) > 0;
+    }
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+    public function permissionKeys(): array
+    {
+        return Permission::whereHas('roles.users', fn ($q) => $q->where('users.id', $this->id))
+            ->pluck('key')->unique()->values()->all();
+    }
+    public function hasPermission(string $key): bool
+    {
+        return $this->isSuperAdmin() || in_array($key, $this->permissionKeys(), true);
+    }
     public function UserProfile(){
         return $this->hasOne(UserProfile::class,'user_id');
     }

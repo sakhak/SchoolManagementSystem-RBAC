@@ -5,30 +5,29 @@ namespace App\Http\Middleware;
 use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Prevents privilege escalation when assigning roles:
+ *  - only super_admin can hand out super_admin or admin
+ *  - admin can hand out teacher / student only
+ */
 class CheckRoleAssignment
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-         $authUser = Auth::user();
-
-        $roleIdToAssign = $request->input('role_id');
-        $roleToAssign = Role::find($roleIdToAssign);
+        $authUser = $request->user();
+        $roleToAssign = Role::find($request->input('role_id'));
 
         if (!$roleToAssign) {
             return response()->json(['message' => 'Role not found'], 404);
         }
 
-        // Example hierarchy: only super_admin can assign admin or teacher
-        if (in_array($roleToAssign->name, ['admin', 'teacher']) &&
-            $authUser->role->name !== 'super_admin') {
+        if ($authUser->isSuperAdmin()) {
+            return $next($request);
+        }
+
+        if (in_array($roleToAssign->key, ['super_admin', 'admin'], true)) {
             return response()->json(['message' => 'Unauthorized to assign this role'], 403);
         }
 

@@ -19,7 +19,7 @@ class UserProfile extends Model
         'address',
         'city',
         'province',
-        'county',
+        'country',
         'profile_image',
         'guardian_name',
         'guardian_phone',
